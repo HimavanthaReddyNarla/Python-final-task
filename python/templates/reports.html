@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reports | Hireway</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('index') }}"><span class="brand-mark">H</span> hireway</a>
+    <nav aria-label="Main navigation"><a href="{{ url_for('index') }}#jobs">Find jobs</a><a href="{{ url_for('index') }}#people">Candidates</a><a href="{{ url_for('index') }}#manage">Manage</a><a class="active" href="{{ url_for('reports') }}">Reports</a></nav>
+    <a class="button button-small" href="{{ url_for('index') }}">Back to portal <span>↗</span></a>
+  </header>
+  <main>
+    <section class="report-hero"><div class="eyebrow">INSIGHTS FOR WHAT COMES NEXT</div><h1>The good things,<br><em>in perspective.</em></h1><p>Explore activity and progress across your jobs, companies, and candidates.</p>
+      {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}<div class="flash-stack">{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}{% endwith %}
+      <form action="{{ url_for('export_report') }}" method="post"><button class="button" type="submit">Export status report <span>↓</span></button></form>
+    </section>
+    <section class="report-grid">
+      <article class="report-card"><div class="eyebrow">01 · MOST APPLIED</div><h2>Roles people<br><em>love.</em></h2><div class="report-table">{% for row in reports.most_applied_jobs %}<div><span>{{ row.title }} <small>{{ row.company_name }}</small></span><strong>{{ row.application_count }}</strong></div>{% else %}<p>No job applications yet.</p>{% endfor %}</div></article>
+      <article class="report-card"><div class="eyebrow">02 · COMPANY ACTIVITY</div><h2>Teams making<br><em>connections.</em></h2><div class="report-table">{% for row in reports.top_companies %}<div><span>{{ row.name }}</span><strong>{{ row.application_count }}</strong></div>{% else %}<p>No companies registered yet.</p>{% endfor %}</div></article>
+      <article class="report-card"><div class="eyebrow">03 · AVERAGE SALARY</div><h2>Worth a closer<br><em>look.</em></h2><div class="report-table">{% for row in reports.average_salary %}<div><span>{{ row.name }}</span><strong>${{ "{:,.2f}".format(row.average_salary) }}</strong></div>{% else %}<p>No salary information yet.</p>{% endfor %}</div></article>
+      <article class="report-card"><div class="eyebrow">04 · OPEN OPPORTUNITIES</div><h2>Doors still<br><em>open.</em></h2><div class="report-table">{% for row in reports.open_jobs %}<div><span>{{ row.title }} <small>{{ row.company_name }} · {{ row.location }}</small></span><strong>${{ "{:,.0f}".format(row.salary) }}</strong></div>{% else %}<p>No open roles right now.</p>{% endfor %}</div></article>
+      <article class="report-card"><div class="eyebrow">05 · SELECTED CANDIDATES</div><h2>Good news,<br><em>shared.</em></h2><div class="report-table">{% for row in reports.selected_candidates %}<div><span>{{ row.candidate_name }} <small>{{ row.email }}</small></span><strong>{{ row.job_title }} · {{ row.company_name }}</strong></div>{% else %}<p>No selected candidates yet.</p>{% endfor %}</div></article>
+      <article class="report-card"><div class="eyebrow">06 · APPLICATION STATUS</div><h2>Every step<br><em>counts.</em></h2><div class="report-table">{% for row in reports.status_summary %}<div><span>{{ row.status }}</span><strong>{{ row.total }}</strong></div>{% else %}<p>No applications yet.</p>{% endfor %}</div></article>
+    </section>
+  </main>
+  <footer><a class="brand" href="{{ url_for('index') }}"><span class="brand-mark">H</span> hireway</a><span>A little closer to the right opportunity.</span><a href="{{ url_for('index') }}">Portal home ↗</a></footer>
+</body>
+</html>
